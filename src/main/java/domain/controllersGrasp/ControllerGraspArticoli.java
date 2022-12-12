@@ -29,8 +29,8 @@ private final ControllerGraspUtente controllerGraspUtente;
                 .filter(article -> {StatoArticolo state = article.getStato();
                     if (admin) {
                         return state.equals(StatoArticolo.OFFERTA_APERTA) ||
-                                state.equals(StatoArticolo.OFFERTA_IN_SCAMBIO) ||
-                                state.equals(StatoArticolo.OFFERTA_CHIUSA);
+                               state.equals(StatoArticolo.OFFERTA_IN_SCAMBIO) ||
+                               state.equals(StatoArticolo.OFFERTA_CHIUSA);
                     } else {
                         return state.equals(StatoArticolo.OFFERTA_APERTA); 
                     }

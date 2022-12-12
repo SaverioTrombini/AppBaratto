@@ -10,7 +10,7 @@ import domain.entities.Campo;
 
 public class ViewArticoli {
 	 public static final String[] MENU_ARTICOLI = {"Visualizza l'elenco dei propri articoli",
-	            "Visualizza l'elenco dei propri articoli tramite categoria","Aggiungi un articolo",
+	            "Visualizza l'elenco offerte aperte tramite categoria","Aggiungi un articolo",
 	            "Modifica lo stato di un articolo"};
 	 private static MyMenu menuArticoli = new MyMenu("Menu articoli", MENU_ARTICOLI);
 	 
