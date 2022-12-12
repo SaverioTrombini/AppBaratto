@@ -1,0 +1,5 @@
+infrastructure.persistence.RepositoryUtenti = ./src/main/resources/utenti.txt
+infrastructure.persistence.RepositoryCategorie = ./src/main/resources/gerarchia.txt
+infrastructure.persistence.RepositoryParametri = ./src/main/resources/parametri.txt
+infrastructure.persistence.RepositoryArticoli = ./src/main/resources/articoli.txt
+infrastructure.persistence.RepositoryBaratti = ./src/main/resources/baratti.txt
