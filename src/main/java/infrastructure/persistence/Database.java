@@ -17,22 +17,19 @@ public class Database implements IDatabase {
 	private RepositoryParametri repositoryParametri;
 	private RepositoryArticoli repositoryArticoli;
 	private RepositoryBaratti repositoryBaratti;
-	
+
 	public Database() {
 		try {
-			repositoryUtenti= new RepositoryUtenti(System.getProperty(RepositoryUtenti.class.getName()));
-			repositoryCategorie= new RepositoryCategorie(System.getProperty(RepositoryCategorie.class.getName()));
-			repositoryParametri= new RepositoryParametri(System.getProperty(RepositoryParametri.class.getName()));
-			repositoryArticoli= new RepositoryArticoli(System.getProperty(RepositoryArticoli.class.getName()));
-			repositoryBaratti= new RepositoryBaratti(System.getProperty(RepositoryBaratti.class.getName()));
-		} catch (ClassNotFoundException e) {
-			
-			e.printStackTrace();
-		} catch (IOException e) {
-			
+			repositoryUtenti = new RepositoryUtenti(System.getProperty(RepositoryUtenti.class.getName()));
+			repositoryCategorie = new RepositoryCategorie(System.getProperty(RepositoryCategorie.class.getName()));
+			repositoryParametri = new RepositoryParametri(System.getProperty(RepositoryParametri.class.getName()));
+			repositoryArticoli = new RepositoryArticoli(System.getProperty(RepositoryArticoli.class.getName()));
+			repositoryBaratti = new RepositoryBaratti(System.getProperty(RepositoryBaratti.class.getName()));
+		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public void save() {
 		repositoryUtenti.save();
@@ -41,33 +38,35 @@ public class Database implements IDatabase {
 		repositoryArticoli.save();
 		repositoryBaratti.save();
 	}
-	
+
 	@Override
 	public Map<String, Utente> getUtenti() {
 		return repositoryUtenti.getUtenti();
 	}
+
 	@Override
 	public Map<String, Categoria> getGerarchia() {
 		return repositoryCategorie.getGerarchia();
 	}
+
 	@Override
 	public Parametri getParametri() {
 		return repositoryParametri.getParametri();
 	}
+
 	@Override
 	public String getPiazza() {
 		return repositoryParametri.getParametri().getPiazza();
 	}
+
 	@Override
 	public Map<Integer, Articolo> getArticoli() {
 		return repositoryArticoli.getArticoli();
 	}
+
 	@Override
 	public List<Baratto> getBaratti() {
-		return repositoryBaratti.getBaratti();		
+		return repositoryBaratti.getBaratti();
 	}
-	@Override
-	public void setParametri(Parametri parametri) {
-		repositoryParametri.setParametri(parametri);
-	}
+
 }

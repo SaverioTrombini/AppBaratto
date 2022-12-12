@@ -14,8 +14,9 @@ public abstract class AbstractRepository<T> {
 
 	private T t;
 	private final String filename;
+
 	public AbstractRepository(String filename) throws ClassNotFoundException, IOException {
-		this.filename=filename;
+		this.filename = filename;
 		File f = new File(filename);
 		f.getParentFile().mkdir();
 		if (f.exists()) {
@@ -26,7 +27,7 @@ public abstract class AbstractRepository<T> {
 	}
 
 	protected abstract T build();
-	
+
 	@SuppressWarnings("unchecked")
 	protected T load() throws IOException, ClassNotFoundException {
 		try (ObjectInputStream inputStream = new ObjectInputStream(
@@ -34,18 +35,19 @@ public abstract class AbstractRepository<T> {
 			return (T) inputStream.readObject();
 		}
 	}
-	
+
 	protected void save() {
 		File f = new File(filename);
 		try (ObjectOutputStream outputStream = new ObjectOutputStream(
 				new BufferedOutputStream(new FileOutputStream(f)))) {
 			outputStream.writeObject(t);
 		} catch (FileNotFoundException e) {
-				e.printStackTrace();
+			e.printStackTrace();
 		} catch (IOException e) {
-				e.printStackTrace();
-		}		
+			e.printStackTrace();
+		}
 	}
+
 	public T getT() {
 		return t;
 	}

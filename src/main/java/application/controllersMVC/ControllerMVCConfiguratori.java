@@ -10,31 +10,23 @@ public class ControllerMVCConfiguratori {
 	private final ControllerMVCCategoria controllerMVCCategoria;
 	private final ControllerMVCParametri controllerMVCParametri;
 	private final ControllerMVCArticoli controllerMVCArticoli;
-	
+
 	public ControllerMVCConfiguratori(IDatabase salvataggi) {
-		viewConfiguratore = new ViewConfiguratore(salvataggi);
+		viewConfiguratore = new ViewConfiguratore();
 		controllerMVCCategoria = new ControllerMVCCategoria(salvataggi);
 		controllerMVCParametri = new ControllerMVCParametri(salvataggi);
 		controllerMVCArticoli = new ControllerMVCArticoli(salvataggi);
 	}
+
 	public void execute(Utente u) {
-		 {
-		 int scelta;
+		int scelta;
 		do {
-			 scelta = viewConfiguratore.scelta();
-	            switch (scelta) {
-	                case 1 -> controllerMVCCategoria.execute();
-	                case 2 -> controllerMVCParametri.execute();
-	                case 3 -> controllerMVCArticoli.stampaArticoliTramiteCategoria(u);
-	            }
-	        }while (scelta != 0);
-		}
-		
+			scelta = viewConfiguratore.scelta();
+			switch (scelta) {
+			case 1 -> controllerMVCCategoria.execute();
+			case 2 -> controllerMVCParametri.execute();
+			case 3 -> controllerMVCArticoli.stampaArticoliTramiteCategoria(u);
+			}
+		} while (scelta != 0);
 	}
-	
-
-	public ViewConfiguratore getViewConfiguratore() {
-		return viewConfiguratore;
-	}
-
 }

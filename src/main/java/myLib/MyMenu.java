@@ -8,7 +8,7 @@ e sia presentata in fondo al men�
 */
 public class MyMenu {
 	final private static String CORNICE = "-------------------------------------------------";
-	final private static String VOCE_USCITA = "0\tEsci e salva cambiamenti";
+	final private static String VOCE_USCITA = "0\tEsci";
 	final private static String RICHIESTA_INSERIMENTO = "Digita il numero dell'opzione desiderata > ";
 
 	private String titolo;

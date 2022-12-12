@@ -12,18 +12,17 @@ import domain.entities.Utente;
 public interface IDatabase {
 
 	void save();
-	
-	Map<String,Utente> getUtenti();
 
-	Map<String,Categoria> getGerarchia();
+	Map<String, Utente> getUtenti();
+
+	Map<String, Categoria> getGerarchia();
 
 	Map<Integer, Articolo> getArticoli();
 
 	List<Baratto> getBaratti();
-	
+
 	Parametri getParametri();
 
 	String getPiazza();
 
-	void setParametri(Parametri parametri);
 }

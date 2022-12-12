@@ -31,7 +31,7 @@ public class ControllerMVCBaratti {
 		this.viewBaratto = new ViewBaratto();
 	}
 
-	public void execute(Utente u) {
+	void execute(Utente u) {
 		int scelta;
 		do {
 			scelta = viewBaratto.scelta();
@@ -44,30 +44,23 @@ public class ControllerMVCBaratti {
 		} while (scelta != 0);
 	}
 
-	private void gestioneIncontriProposteBaratto(Utente utente) {
-		if (controllerGraspBaratti.getBarattiInAttesa(utente).isEmpty()) {
-			viewBaratto.stampaNonCiSonoIncontriDaGestire();
+	private void iniziaBaratto(Utente utente) {
+		List<Articolo> articoliDisponibili = controllerGraspArticoli.getListaOfferteAperte(utente.getUsername());
+		if (articoliDisponibili.isEmpty()) {
+			viewBaratto.stampaNonHaiArticoliDisponibili();
 			return;
 		}
-		gestioneIncontro(stampaElencoERitornaOpzioneSelezionata(controllerGraspBaratti.getBarattiInAttesa(utente)));
-	}
 
-	private void gestioneIncontro(Baratto baratto) {
-		viewBaratto.stampaBaratto(baratto);
-		if (viewBaratto.richiediSeAccettareLuogoEOrario()) {
-			controllerGraspBaratti.setStatoOfferteChiuse(baratto);
-			controllerGraspArticoli.setStatoChiuso(baratto.getProposta(),baratto.getRichiesta());
-					
-		} else {
-			proponiLuogoEdOrario(baratto);
+		Articolo proposta = stampaElencoERitornaOpzioneSelezionata(articoliDisponibili,viewBaratto.richiediSelezioneProposta());
+		List<Articolo> articoliSimili = controllerGraspArticoli.getListaArticoliDisponibili(utente,
+				proposta.getCategoria());
+		if (articoliSimili.isEmpty()) {
+			viewBaratto.stampaNonCiSonoArticoliSimili();
+			return;
 		}
-	}
 
-	private void stampaBarattiInScambio(Utente utente) {
-		if (controllerGraspBaratti.getBarattiScambioInCorso(utente).isEmpty()) {
-			viewBaratto.stampaNonCiSonoArticoliInScambio();
-		}
-		viewBaratto.stampaBarattiInScambio(controllerGraspBaratti.getBarattiScambioInCorso(utente));
+		Articolo richiesta = stampaElencoERitornaOpzioneSelezionata(articoliSimili,viewBaratto.richiediSelezioneRichiesta());
+		controllerGraspBaratti.addBarattoEAggiornaStato(proposta.getCodice_prodotto(), richiesta.getCodice_prodotto());
 	}
 
 	private void gestioneOfferte(Utente utente) {
@@ -75,21 +68,21 @@ public class ControllerMVCBaratti {
 			viewBaratto.stampaNonCiSonoBarattiDaConfermare();
 			return;
 		}
-		Baratto baratto = stampaElencoERitornaOpzioneSelezionata(controllerGraspBaratti.getBarattiDaConfermare(utente));
+		Baratto baratto = stampaElencoERitornaOpzioneSelezionata(controllerGraspBaratti.getBarattiDaConfermare(utente),viewBaratto.richiediQualeBarattoGestire());
 		viewBaratto.stampaBarattoScelto(baratto);
 		if (viewBaratto.richiestaAccettazioneBarattoProposto()) {
 			controllerGraspBaratti.setStatoOfferteInScambio(baratto);
-			controllerGraspArticoli.setStatoInScambio(baratto.getProposta(),baratto.getRichiesta());
-				viewBaratto.richiestaInserimentoLuogoEdOrario();
+			controllerGraspArticoli.setStatoInScambio(baratto.getProposta(), baratto.getRichiesta());
+			viewBaratto.richiestaInserimentoLuogoEdOrario();
 			proponiLuogoEdOrario(baratto);
 		} else {
 			controllerGraspBaratti.setStatoOfferteAperte(baratto);
-			controllerGraspArticoli.setStatoAperto(baratto.getProposta(),baratto.getRichiesta());
+			controllerGraspArticoli.setStatoAperto(baratto.getProposta(), baratto.getRichiesta());
 		}
 	}
 
 	private void proponiLuogoEdOrario(Baratto baratto) {
-		String luogo = stampaElencoERitornaOpzioneSelezionata(controllerGraspParametri.getLuoghi());
+		String luogo = stampaElencoERitornaOpzioneSelezionata(controllerGraspParametri.getLuoghi(), viewBaratto.richiediOpzioneLuogo());
 		LocalDateTime orario = gestioneOrario();
 		controllerGraspBaratti.setLuogoEOrario(luogo, orario, baratto);
 	}
@@ -115,40 +108,49 @@ public class ControllerMVCBaratti {
 	}
 
 	private LocalDate gestioneData() {
-		LocalDate propsta;
+		LocalDate proposta;
 		do {
 			int year = viewBaratto.richiestaInserimentoAnno();
 			int month = viewBaratto.richiestaInserimentoMese();
 			int day = viewBaratto.stampaRichiestaGiorni(controllerGraspBaratti.gestisciGiorno(year, month));
-			propsta = LocalDate.of(year, month, day);
-			if (!propsta.isAfter(LocalDate.now())) {
+			proposta = LocalDate.of(year, month, day);
+			if (!proposta.isAfter(LocalDate.now())) {
 				viewBaratto.stampaValoriPassatiNonValidi();
 			}
-		} while (!propsta.isAfter(LocalDate.now()));
-		return propsta;
+		} while (!proposta.isAfter(LocalDate.now()));
+		return proposta;
 	}
 
-	private <T> T stampaElencoERitornaOpzioneSelezionata(Collection<T> collection) {
+	private void stampaBarattiInScambio(Utente utente) {
+		if (controllerGraspBaratti.getBarattiScambioInCorso(utente).isEmpty()) {
+			viewBaratto.stampaNonCiSonoArticoliInScambio();
+		}
+		viewBaratto.stampaBarattiInScambio(controllerGraspBaratti.getBarattiScambioInCorso(utente));
+	}
+
+	private void gestioneIncontriProposteBaratto(Utente utente) {
+		if (controllerGraspBaratti.getBarattiInAttesa(utente).isEmpty()) {
+			viewBaratto.stampaNonCiSonoIncontriDaGestire();
+			return;
+		}
+		gestioneIncontro(stampaElencoERitornaOpzioneSelezionata(controllerGraspBaratti.getBarattiInAttesa(utente),viewBaratto.richiediQualeBarattoGestire()));
+	}
+
+	private void gestioneIncontro(Baratto baratto) {
+		viewBaratto.stampaBaratto(baratto);
+		if (viewBaratto.richiediSeAccettareLuogoEOrario()) {
+			controllerGraspBaratti.setStatoOfferteChiuse(baratto);
+			controllerGraspArticoli.setStatoChiuso(baratto.getProposta(), baratto.getRichiesta());
+
+		} else {
+			proponiLuogoEdOrario(baratto);
+		}
+	}
+
+	private <T> T stampaElencoERitornaOpzioneSelezionata(Collection<T> collection, String richiesta) {
 		Map<Integer, T> elenco = controllerGraspBaratti.creaMappa(collection);
-		int scelta = viewBaratto.stampaElencoEChiediOpzione(elenco);
+		int scelta = viewBaratto.stampaElencoEChiediOpzione(elenco, richiesta);
 		return elenco.get(scelta);
-	}
-	private void iniziaBaratto(Utente utente) {
-		List<Articolo> articoliDisponibili = controllerGraspArticoli.getListaOfferteAperte(utente.getUsername());
-		if (articoliDisponibili.isEmpty()) {
-			viewBaratto.stampaNonHaiArticoliDisponibili();
-			return;
-		}
-
-		Articolo proposta = stampaElencoERitornaOpzioneSelezionata(articoliDisponibili);
-		List<Articolo> articoliSimili = controllerGraspArticoli.getListaArticoliDisponibili(utente,proposta.getCategoria());
-		if (articoliSimili.isEmpty()) {
-			viewBaratto.stampaNonCiSonoArticoliSimili();
-			return;
-		}
-
-		Articolo richiesta = stampaElencoERitornaOpzioneSelezionata(articoliSimili);
-		controllerGraspBaratti.addBarattoEAggiornaStato(proposta.getCodice_prodotto(), richiesta.getCodice_prodotto());
 	}
 
 }

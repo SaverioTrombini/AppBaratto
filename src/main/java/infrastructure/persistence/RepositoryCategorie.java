@@ -6,7 +6,7 @@ import java.util.Map;
 
 import domain.entities.Categoria;
 
-public class RepositoryCategorie extends AbstractRepository <Map<String, Categoria>>{
+public class RepositoryCategorie extends AbstractRepository<Map<String, Categoria>> {
 
 	public RepositoryCategorie(String filename) throws ClassNotFoundException, IOException {
 		super(filename);
@@ -17,7 +17,7 @@ public class RepositoryCategorie extends AbstractRepository <Map<String, Categor
 		return new HashMap<>();
 	}
 
-	public Map<String, Categoria> getGerarchia(){
+	public Map<String, Categoria> getGerarchia() {
 		return getT();
 	}
 }

@@ -12,102 +12,94 @@ import domain.entities.Parametri;
 import infrastructure.batchImport.JsonParser;
 import infrastructure.persistence.IDatabase;
 
-
 public class ControllerGraspParametri {
 
-		private final IDatabase salvataggi;
+	private final Parametri parametri;
 
 	public ControllerGraspParametri(IDatabase salvataggi) {
-		this.salvataggi = salvataggi;
+		this.parametri = salvataggi.getParametri();
 	}
 
-
 	public void addDay(DayOfWeek giorno) {
-		salvataggi.getParametri().addDay(giorno);
+		parametri.addDay(giorno);
 	}
 
 	public void addLuogo(String luogo) {
-		salvataggi.getParametri().addLuogo(luogo);
+		parametri.addLuogo(luogo);
 	}
 
 	public void addHourlyInterval(LocalTime inizio, LocalTime fine) {
-		salvataggi.getParametri().addTimeInterval(inizio, fine);
-	}	
+		parametri.addTimeInterval(inizio, fine);
+	}
 
+	public void importFromBatch(String filePath) throws FileNotFoundException, JsonParseException {
+		JsonParser jsonParser = new JsonParser();
+		Parametri p = jsonParser.importParametri(filePath);
+		parametri.setParametri(p);
+	}
+	
 	public boolean exists(String luogo) {
-		return salvataggi.getParametri().getLuoghi().contains(luogo);
+		return parametri.getLuoghi().contains(luogo);
 	}
 
 	public boolean exists(DayOfWeek giorno) {
-		return salvataggi.getParametri().getGiorni().contains(giorno);
-	}	
-
+		return parametri.getGiorni().contains(giorno);
+	}
 
 	public boolean isValid(int inizio, int fine) {
-		return !salvataggi.getParametri().contains(inizio, fine)
-				|| salvataggi.getParametri().isMaxTime(inizio, fine);
+		return !parametri.contains(inizio, fine) || parametri.isMaxTime(inizio, fine);
 	}
-	
+
 	public boolean isValid(DayOfWeek dayOfWeek) {
-        return getGiorni().contains(dayOfWeek);
-    }
-	
-	 public boolean isValid(LocalTime orario) {
-	        for (Orologio intervallo : getOrario()) {
-	            if(intervallo.contains(orario))
-	                return true;
-	        }
-	        return false;
-	    }
+		return getGiorni().contains(dayOfWeek);
+	}
+
+	public boolean isValid(LocalTime orario) {
+		for (Orologio intervallo : getOrario()) {
+			if (intervallo.contains(orario))
+				return true;
+		}
+		return false;
+	}
 
 	public Set<Integer> allowedMinutes() {
 		return Orologio.allowedMinutes();
 	}
-	
 
-	
-	// Setters&getters
 	public LocalTime getStopLimitFor(LocalTime inizio) {
-		return salvataggi.getParametri().getOrarioMax(inizio);
+		return parametri.getOrarioMax(inizio);
 	}
 
 	public int getScadenza() {
-		return salvataggi.getParametri().getScadenza();
+		return parametri.getScadenza();
 	}
+
 	public void setScadenza(int scadenza) {
-		salvataggi.getParametri().setScadenza(scadenza);
+		parametri.setScadenza(scadenza);
 	}
 
 	public Set<DayOfWeek> getGiorni() {
-		return salvataggi.getParametri().getGiorni();
+		return parametri.getGiorni();
 	}
 
 	public String getParametri() {
-		return salvataggi.getParametri().toString();
+		return parametri.toString();
 	}
 
 	public void setPiazza(String piazza) {
-		salvataggi.getParametri().setPiazza(piazza);
+		parametri.setPiazza(piazza);
 	}
 
-	public Set<String> getLuoghi(){
-        return salvataggi.getParametri().getLuoghi();
-    }
-	
-	public Set<Orologio> getOrario(){
-        return salvataggi.getParametri().getOrario();    
-    }
+	public Set<String> getLuoghi() {
+		return parametri.getLuoghi();
+	}
+
+	public Set<Orologio> getOrario() {
+		return parametri.getOrario();
+	}
 
 	public boolean existsDefaultValues() {
-		return salvataggi.getPiazza()!=null;
+		return parametri.getPiazza() != null;
 	}
-
-	public void importFromBatch(String filePath) 
-			throws FileNotFoundException, JsonParseException {
-        JsonParser jsonParser = new JsonParser();
-        Parametri parametri = jsonParser.importParametri(filePath);
-        salvataggi.setParametri(parametri);
-    }
-	
 
 }

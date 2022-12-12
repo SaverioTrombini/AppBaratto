@@ -16,8 +16,8 @@ public class RepositoryBaratti extends AbstractRepository<List<Baratto>> {
 	protected List<Baratto> build() {
 		return new ArrayList<>();
 	}
-	
-	public List<Baratto> getBaratti(){
+
+	public List<Baratto> getBaratti() {
 		return getT();
 	}
 

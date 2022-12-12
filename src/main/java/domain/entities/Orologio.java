@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 public class Orologio implements Comparable<Orologio>, Serializable {
-	
+
 	private final LocalTime inizio;
 	private final LocalTime fine;
-
-
 	public static final LocalTime ORARIO_MAX = LocalTime.of(23, 30);
-	
+
 	public Orologio(int ora_inizio, int minuti_inizio, int ora_fine, int minuti_fine) {
 		inizio = LocalTime.of(ora_inizio, minuti_inizio);
 		fine = LocalTime.of(ora_fine, minuti_fine);
@@ -35,10 +33,11 @@ public class Orologio implements Comparable<Orologio>, Serializable {
 			return 1;
 		}
 	}
-	
+
 	public boolean contains(LocalTime orario) {
 		return orario.equals(inizio) || orario.equals(fine) || (orario.isAfter(inizio) && orario.isBefore(fine));
 	}
+
 	public List<String> allowedTimes() {
 		ArrayList<String> times = new ArrayList<>();
 		times.add(inizio.toString());
@@ -49,13 +48,14 @@ public class Orologio implements Comparable<Orologio>, Serializable {
 		}
 		return times;
 	}
-	
+
 	public static Set<Integer> allowedMinutes() {
 		Set<Integer> minsAllowed = new HashSet<>();
 		minsAllowed.add(0);
 		minsAllowed.add(30);
 		return minsAllowed;
 	}
+
 	public String stampaOrariConcessi() {
 		return allowedTimes().toString();
 	}
@@ -65,14 +65,8 @@ public class Orologio implements Comparable<Orologio>, Serializable {
 		return "dalle " + inizio + " alle " + fine;
 	}
 
-	// getters&setters
-	public LocalTime getStart() {
+	public LocalTime getInizio() {
 		return inizio;
 	}
 
-	public LocalTime getEnd() {
-		return fine;
-	}
-
-	
 }

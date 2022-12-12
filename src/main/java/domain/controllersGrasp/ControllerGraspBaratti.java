@@ -38,17 +38,14 @@ public class ControllerGraspBaratti {
 	}
 
 	public List<Baratto> getBarattiDaConfermare(Utente utente) {
-		return elencoBaratti.stream()
-				.filter(baratto -> baratto.inAttesaDi(utente) 
-						&& baratto.propostaInCorso())
+		return elencoBaratti.stream().filter(baratto -> baratto.inAttesaDi(utente) && baratto.propostaInCorso())
 				.toList();
 	}
+
 	public List<Baratto> getBarattiScambioInCorso(Utente utente) {
-		return elencoBaratti.stream()
-				.filter(baratto -> baratto.presente(utente)
-						&& baratto.scambioInCorso())
-				.toList();
+		return elencoBaratti.stream().filter(baratto -> baratto.presente(utente) && baratto.scambioInCorso()).toList();
 	}
+
 	public void setStatoOfferteInScambio(Baratto baratto) {
 		elencoBaratti.remove(baratto);
 		baratto.setStatoOfferteInScambio();
@@ -79,10 +76,10 @@ public class ControllerGraspBaratti {
 		return giorni;
 	}
 
-	  public void aggiornaStatoBaratti() {
-	        int scadenza = controllerGraspParametri.getScadenza();
-	        elencoBaratti.removeIf(baratto -> baratto.aggiornaStati(scadenza, ChronoUnit.DAYS));
-	    }
+	public void aggiornaStatoBaratti() {
+		int scadenza = controllerGraspParametri.getScadenza();
+		elencoBaratti.removeIf(baratto -> baratto.aggiornaStati(scadenza, ChronoUnit.DAYS));
+	}
 
 	public List<Baratto> getBarattiInAttesa(Utente utente) {
 		return elencoBaratti.stream().filter(baratto -> baratto.inAttesaDi(utente)).filter(Baratto::scambioInCorso)
@@ -100,4 +97,5 @@ public class ControllerGraspBaratti {
 		}
 		return elenco;
 	}
+
 }

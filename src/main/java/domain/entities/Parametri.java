@@ -20,46 +20,41 @@ public class Parametri implements Serializable {
 		this.orario = orario;
 		this.scadenza = scadenza;
 	}
-	public Parametri(Set<String> luoghi,Set<DayOfWeek> giorni,Set<Orologio> orario) {
-		this(null,luoghi,giorni,orario,100);
+
+	public Parametri(Set<String> luoghi, Set<DayOfWeek> giorni, Set<Orologio> orario) {
+		this(null, luoghi, giorni, orario, 100);
 	}
-	
-	 public void addLuogo(String luogo) {
-	        luoghi.add(luogo);
-	    }
 
-	    public void addDay(DayOfWeek giorno) {
-	        giorni.add(giorno);
-	    }
+	public void addLuogo(String luogo) {
+		luoghi.add(luogo);
+	}
 
-	    public void addTimeInterval(LocalTime inizio, LocalTime fine) {
-	        orario.add(new Orologio(inizio, fine));
-	    }
+	public void addDay(DayOfWeek giorno) {
+		giorni.add(giorno);
+	}
 
-	    /*Questo metodo verifica se l'orario inserito appartiene ai set orari
-	     * inseriti in 'orario' 
-	     * @return boolean */
-	    public boolean contains(int ora, int minuti) {
-	        for (Orologio timeInterval: orario) {
-	            if (timeInterval.contains(LocalTime.of(ora, minuti))) {
-	                return true;
-	            }
-	        }
-	        return false;
-	    }
+	public void addTimeInterval(LocalTime inizio, LocalTime fine) {
+		orario.add(new Orologio(inizio, fine));
+	}
 
-	    /*Questo metodo verifica se l'orario inserito corrisponde all'orario
-	     * massimo previsto in 'ORARIO_MAX'*/
-	    public boolean isMaxTime(int ora, int minuti) {
-	        return Orologio.ORARIO_MAX.equals(LocalTime.of(ora, minuti));
-	    }
-	    
-	 
-	    public String toString() {
-	        return "Parametri:" + "\npiazza=" + piazza + "\nluoghi=" + luoghi + "\ngiorni=" + giorni +
-	        		"\nintervalli orari=" + orario + "\nscadenza=" + scadenza ;
-	    }
-	    
+	public boolean contains(int ora, int minuti) {
+		for (Orologio timeInterval : orario) {
+			if (timeInterval.contains(LocalTime.of(ora, minuti))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isMaxTime(int ora, int minuti) {
+		return Orologio.ORARIO_MAX.equals(LocalTime.of(ora, minuti));
+	}
+
+	public String toString() {
+		return "Parametri:" + "\npiazza=" + piazza + "\nluoghi=" + luoghi + "\ngiorni=" + giorni + "\nintervalli orari="
+				+ orario + "\nscadenza=" + scadenza;
+	}
+
 	public String getPiazza() {
 		return piazza;
 	}
@@ -101,12 +96,20 @@ public class Parametri implements Serializable {
 	}
 
 	public LocalTime getOrarioMax(LocalTime inizio) {
-        for (Orologio timeInterval: orario) {
-            if (timeInterval.getStart().isAfter(inizio)) {
-                return timeInterval.getStart().minusMinutes(30);
-            }
-        }
-        return Orologio.ORARIO_MAX;
-    }
-	
+		for (Orologio timeInterval : orario) {
+			if (timeInterval.getInizio().isAfter(inizio)) {
+				return timeInterval.getInizio().minusMinutes(30);
+			}
+		}
+		return Orologio.ORARIO_MAX;
+	}
+
+	public void setParametri(Parametri nParametri) {
+		setPiazza(nParametri.getPiazza());
+		setLuoghi(nParametri.getLuoghi());
+		setGiorni(nParametri.getGiorni());
+		setOrario(nParametri.getOrario());
+		setScadenza(nParametri.getScadenza());
+	}
+
 }

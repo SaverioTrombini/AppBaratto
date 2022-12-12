@@ -14,21 +14,21 @@ public class ViewParametri {
 	public static final int MAX_SCADENZA = 7;
 	public static final String INSERISCI_GIORNO = String.format("Inserisci un giorno della settimana [%d-%d]: ",
 			MIN_SCADENZA, MAX_SCADENZA);
-	public static final String[] MENU_CONFIGURAZIONE = { "Visualizza Configurazione", "Modifica Configurazione"
-			,"Importa parametri in modalita batch"};
+	public static final String[] MENU_CONFIGURAZIONE = { "Visualizza Configurazione", "Modifica Configurazione",
+			"Importa parametri in modalita batch" };
 	private static final MyMenu menuConfigurazione = new MyMenu("Menu Configurazione", MENU_CONFIGURAZIONE);
-	
+
 	public int scelta() {
 		return menuConfigurazione.scegli();
 	}
 
 	public void stampaParametri(String parametri) {
 		System.out.println(parametri);
-		
 	}
 
 	public String richiestaInserimentoPiazza() {
-	return InputDati.leggiStringaNonVuota("Inserisci piazza di scambio (ATTENZIONE, QUESTO VALORE NON PUO' CAMBIARE): ");
+		return InputDati
+				.leggiStringaNonVuota("Inserisci piazza di scambio (ATTENZIONE, QUESTO VALORE NON PUO' CAMBIARE): ");
 	}
 
 	public String richiestaInserimentoLuogo() {
@@ -40,7 +40,7 @@ public class ViewParametri {
 	}
 
 	public void stampaLuogoGiaInserito() {
-		System.out.println("Luogo gia' inserito");	
+		System.out.println("Luogo gia' inserito");
 	}
 
 	public DayOfWeek richiestaInserimentoGiorni() {
@@ -53,7 +53,6 @@ public class ViewParametri {
 
 	public void stampaGiornoGiaInserito() {
 		System.out.println("Giorno gia' inserito");
-		
 	}
 
 	public int richiestaInserimentoOraIniziale() {
@@ -66,7 +65,6 @@ public class ViewParametri {
 
 	public void stampaOrarioNonValido() {
 		System.out.println("Orario non valido");
-		
 	}
 
 	public int richiestaInserimentoOraFinale(LocalTime orarioIniziale) {
@@ -75,13 +73,12 @@ public class ViewParametri {
 	}
 
 	public int richiediInserimentoMinutoFinale(Set<Integer> allowedMinutes) {
-		return InputDati.leggiInteroDaSet("Inserisci i minuti in cui terminano gli scambi: ",allowedMinutes);
+		return InputDati.leggiInteroDaSet("Inserisci i minuti in cui terminano gli scambi: ", allowedMinutes);
 	}
 
 	public void stampaOrarioNonValido(LocalTime stopLimitFor) {
 		System.out.println("L'orario non e' valido: ");
 		System.out.printf("Inserisci un orario < di %s", stopLimitFor);
-		
 	}
 
 	public int richiediInsermientoScadenza() {
@@ -110,7 +107,6 @@ public class ViewParametri {
 
 	public void stampaPiazzaGiaInserita() {
 		System.out.println("Piazza gia' inserita e non può essere modificata");
-		
 	}
 
 	public String richiestaInserimentoPercorsoAssoluto() {
@@ -120,9 +116,9 @@ public class ViewParametri {
 	public void stampaCaricamentoParametriRiuscito() {
 		System.out.println("I parametri presenti nel file indicato sono stati caricati");
 	}
-	
+
 	public void stampaErroriCaricamentoFile(Exception e) {
 		System.out.println("File not found / jsonparse error" + e);
 	}
-	
+
 }

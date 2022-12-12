@@ -8,38 +8,37 @@ import infrastructure.persistence.IDatabase;
 public class ControllerMVCLogin {
 	private final ControllerGraspUtente controllerGraspUtente;
 	private final ViewLogin viewLogin;
-	private Utente utente = null;
+	private Utente utente;
 
 	public ControllerMVCLogin(IDatabase salvataggi) {
 		this.controllerGraspUtente = new ControllerGraspUtente(salvataggi);
 		this.viewLogin = new ViewLogin();
 	}
 
-	public void execute() {
+	void execute() {
 		switch (viewLogin.scelta()) {
 		case 1 -> {
 			startRegister(false);
 			utente = loginFruitore();
 		}
-		case 2 -> utente = loginAdmin();
+		case 2 -> utente = login();
 		}
-		
 	}
 
-	private Utente loginAdmin() {
-		 String username, password;
-	        
-         do {
-             username = viewLogin.richiediInserimentoUsername();
-             password = viewLogin.richiediInserimentoPassword();
-             if (controllerGraspUtente.checkDefaultCredentials(username, password)) {
-            	 viewLogin.avvisaInserimentoCredenzialiDefault();
-                 startRegister(true);
-             } else if (!controllerGraspUtente.login(username, password)) {
-            	 viewLogin.avvisaCredenzialiNonValide();
-             }
-         } while (!controllerGraspUtente.login(username, password));
-         return controllerGraspUtente.getUtente(username);
+	private Utente login() {
+		String username, password;
+
+		do {
+			username = viewLogin.richiediInserimentoUsername();
+			password = viewLogin.richiediInserimentoPassword();
+			if (controllerGraspUtente.checkDefaultCredentials(username, password)) {
+				viewLogin.avvisaInserimentoCredenzialiDefault();
+				startRegister(true);
+			} else if (!controllerGraspUtente.login(username, password)) {
+				viewLogin.avvisaCredenzialiNonValide();
+			}
+		} while (!controllerGraspUtente.login(username, password));
+		return controllerGraspUtente.getUtente(username);
 	}
 
 	private Utente loginFruitore() {
@@ -52,7 +51,6 @@ public class ControllerMVCLogin {
 				viewLogin.avvisaCredenzialiNonValide();
 			}
 		} while (!controllerGraspUtente.login(username, password));
-
 		return controllerGraspUtente.getUtente(username);
 	}
 
@@ -72,10 +70,10 @@ public class ControllerMVCLogin {
 			}
 		} while (controllerGraspUtente.checkDefaultCredentials(username, password));
 		controllerGraspUtente.registration(username, password, b);
-
+		viewLogin.richiediDiInserireCredenziali();
 	}
 
-	public Utente getUtente() {
+	Utente getUtente() {
 		return utente;
 	}
 

@@ -1,6 +1,5 @@
 package application.controllersMVC;
 
-
 import java.io.FileNotFoundException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -20,10 +19,9 @@ public class ControllerMVCParametri {
 	public ControllerMVCParametri(IDatabase salvataggi) {
 		this.controllerGraspParametri = new ControllerGraspParametri(salvataggi);
 		this.viewParametri = new ViewParametri();
-
 	}
 
-	public void execute() {
+	void execute() {
 		int scelta;
 		do {
 			scelta = viewParametri.scelta();
@@ -35,18 +33,9 @@ public class ControllerMVCParametri {
 		} while (scelta != 0);
 	}
 
-	private void importFromBatch() {
-        if (controllerGraspParametri.existsDefaultValues()) {
-            viewParametri.stampaPiazzaGiaInserita();
-        }
-        try {
-            String filePath = viewParametri.richiestaInserimentoPercorsoAssoluto();
-            controllerGraspParametri.importFromBatch(filePath);
-            viewParametri.stampaCaricamentoParametriRiuscito();
-        } catch (FileNotFoundException | JsonParseException e) {
-        	viewParametri.stampaErroriCaricamentoFile(e);
-        }
-    }
+	void parametriToString() {
+		viewParametri.stampaParametri(controllerGraspParametri.getParametri());
+	}
 
 	private void editParametri() {
 		if (!controllerGraspParametri.existsDefaultValues()) {
@@ -75,7 +64,6 @@ public class ControllerMVCParametri {
 		controllerGraspParametri.setScadenza(viewParametri.richiediInsermientoScadenza());
 	}
 
-
 	private void inserisciIntervalliOrari() {
 		boolean continua;
 		do {
@@ -101,17 +89,15 @@ public class ControllerMVCParametri {
 	}
 
 	private LocalTime inserisciFine(LocalTime orarioIniziale) {
-		int oraFinale, minutoFinale;		
+		int oraFinale, minutoFinale;
 		LocalTime stopLimitFor = controllerGraspParametri.getStopLimitFor(orarioIniziale);
 		do {
 			oraFinale = viewParametri.richiestaInserimentoOraFinale(orarioIniziale);
 			minutoFinale = viewParametri.richiediInserimentoMinutoFinale(controllerGraspParametri.allowedMinutes());
-			if (LocalTime.of(oraFinale, minutoFinale)
-					.isAfter(stopLimitFor)) {
+			if (LocalTime.of(oraFinale, minutoFinale).isAfter(stopLimitFor)) {
 				viewParametri.stampaOrarioNonValido(stopLimitFor);
 			}
-		} while (LocalTime.of(oraFinale, minutoFinale)
-				.isAfter(stopLimitFor));
+		} while (LocalTime.of(oraFinale, minutoFinale).isAfter(stopLimitFor));
 
 		return LocalTime.of(oraFinale, minutoFinale);
 	}
@@ -147,11 +133,19 @@ public class ControllerMVCParametri {
 
 	private void inserisciPiazza() {
 		controllerGraspParametri.setPiazza(viewParametri.richiestaInserimentoPiazza());
-
 	}
 
-	void parametriToString() {
-		viewParametri.stampaParametri(controllerGraspParametri.getParametri());
+	private void importFromBatch() {
+		if (controllerGraspParametri.existsDefaultValues()) {
+			viewParametri.stampaPiazzaGiaInserita();
+		}
+		try {
+			String filePath = viewParametri.richiestaInserimentoPercorsoAssoluto();
+			controllerGraspParametri.importFromBatch(filePath);
+			viewParametri.stampaCaricamentoParametriRiuscito();
+		} catch (FileNotFoundException | JsonParseException e) {
+			viewParametri.stampaErroriCaricamentoFile(e);
+		}
 	}
 
 }

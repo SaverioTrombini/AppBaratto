@@ -6,10 +6,9 @@ import java.util.HashSet;
 import domain.entities.Parametri;
 
 public class RepositoryParametri extends AbstractRepository<Parametri> {
-	private final Parametri parametri;
+
 	public RepositoryParametri(String filename) throws ClassNotFoundException, IOException {
 		super(filename);
-		parametri = getT();
 	}
 
 	@Override
@@ -18,15 +17,7 @@ public class RepositoryParametri extends AbstractRepository<Parametri> {
 	}
 
 	public Parametri getParametri() {
-		return parametri;
+		return getT();
 	}
-
-	public void setParametri(Parametri nParametri) {
-       	parametri.setPiazza(nParametri.getPiazza());
-        parametri.setLuoghi(nParametri.getLuoghi());
-        parametri.setGiorni(nParametri.getGiorni());
-        parametri.setOrario(nParametri.getOrario());
-        parametri.setScadenza(nParametri.getScadenza());
-    }
 
 }

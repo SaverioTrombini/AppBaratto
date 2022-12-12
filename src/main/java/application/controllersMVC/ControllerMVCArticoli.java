@@ -3,15 +3,14 @@ package application.controllersMVC;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import application.views.ViewArticoli;
 import domain.entities.Articolo;
 import domain.entities.Campo;
+import domain.entities.Utente;
 import domain.entities.StatoArticolo;
 import domain.controllersGrasp.ControllerGraspArticoli;
 import domain.controllersGrasp.ControllerGraspCategoria;
-import domain.entities.Utente;
 import infrastructure.persistence.IDatabase;
 
 public class ControllerMVCArticoli {
@@ -28,14 +27,7 @@ public class ControllerMVCArticoli {
 
 	}
 
-	public void stampaArticoliTramiteCategoria(Utente u) {
-		controllerMVCCategoria.toShortString();
-		String radice = controllerMVCCategoria.inputRoot();
-		String categoria = controllerMVCCategoria.inputCategoriaPresente(radice);
-		viewArticoli.stampaElencoArticoli(controllerGraspArticoli.getArticoliCategoria(radice, categoria, u.isAdmin()));
-	}
-
-	public void execute(Utente u) {
+	void execute(Utente u) {
 		int scelta;
 		do {
 			scelta = viewArticoli.scelta();
@@ -46,6 +38,21 @@ public class ControllerMVCArticoli {
 			case 4 -> setStatoArticolo(u);
 			}
 		} while (scelta != 0);
+	}
+
+	private void stampaElencoArticoliUtente(Utente utente) {
+		if (controllerGraspArticoli.getArticoliUtente(utente.getUsername()).isEmpty()) {
+			viewArticoli.stampaNonCiSonoArticoliNelTuoElenco();
+			return;
+		}
+		viewArticoli.stampaElencoArticoli(controllerGraspArticoli.getArticoliUtente(utente.getUsername()));
+	}
+
+	void stampaArticoliTramiteCategoria(Utente u) {
+		controllerMVCCategoria.toShortString();
+		String radice = controllerMVCCategoria.inputRoot();
+		String categoria = controllerMVCCategoria.inputCategoriaPresente(radice);
+		viewArticoli.stampaElencoArticoli(controllerGraspArticoli.getArticoliCategoria(radice, categoria, u.isAdmin()));
 	}
 
 	private void aggiungiArticolo(Utente utente) {
@@ -91,30 +98,12 @@ public class ControllerMVCArticoli {
 			return controllerGraspArticoli.ritirareOfferta(scelta);
 		} else {
 			boolean scelta = viewArticoli.richiestaPubblicazioneArticolo();
-			return controllerGraspArticoli.pubblicareOfferta(scelta);			
+			return controllerGraspArticoli.pubblicareOfferta(scelta);
 		}
 	}
 
-	private void stampaElencoArticoliUtente(Utente utente) {
-		if(controllerGraspArticoli.getArticoliUtente(utente.getUsername()).isEmpty()){
-			viewArticoli.stampaNonCiSonoArticoliNelTuoElenco();
-			return;
-		}
-		viewArticoli.stampaElencoArticoli(controllerGraspArticoli.getArticoliUtente(utente.getUsername()));
+	List<Articolo> getListaOfferteAperte(String username) {
+		return controllerGraspArticoli.getListaOfferteAperte(username);
 	}
-
-	public List<Articolo> getListaOfferteAperte(String username) {
-        return getStreamArticoli(username)
-                .filter(Articolo::aperta)
-                .toList();
-    }
-
-	public Stream<Articolo> getStreamArticoli(String username) {
-        return controllerGraspArticoli.getArticoli().values().stream()
-                .filter(articolo -> articolo.getUtente().getUsername().equals(username));
-    }
-	
-
-	
 
 }

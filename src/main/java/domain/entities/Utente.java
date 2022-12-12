@@ -11,15 +11,14 @@ public abstract class Utente implements Serializable {
 		this.password = password;
 	}
 
-
 	public boolean checkCredentials(String username, String password) {
 		return this.username.equals(username) && this.password.equals(password);
 	}
 
 	public abstract boolean isAdmin();
-	
-    public String getUsername() {
-        return username;
-    }
+
+	public String getUsername() {
+		return username;
+	}
 
 }

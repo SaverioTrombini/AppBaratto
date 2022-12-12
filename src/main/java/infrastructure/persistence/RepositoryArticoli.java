@@ -6,13 +6,12 @@ import java.util.Map;
 
 import domain.entities.Articolo;
 
-public class RepositoryArticoli extends AbstractRepository<Map<Integer,Articolo>>{
+public class RepositoryArticoli extends AbstractRepository<Map<Integer, Articolo>> {
 
 	public RepositoryArticoli(String filename) throws ClassNotFoundException, IOException {
 		super(filename);
 	}
 
-	
 	protected Map<Integer, Articolo> build() {
 		return new HashMap<>();
 	}

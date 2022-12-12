@@ -21,7 +21,7 @@ public class ControllerMVCCategoria {
 		this.viewCategoria = new ViewCategoria();
 	}
 
-	public void execute() {
+	void execute() {
 		int scelta;
 		do {
 			scelta = viewCategoria.scegli();
@@ -34,22 +34,17 @@ public class ControllerMVCCategoria {
 		} while (scelta != 0);
 	}
 
-	private void importFromBatch() {
-		try {
-			if (controllerGraspArticoli.getArticoli().isEmpty()) {
-				controllerGraspCategoria.importFromBatch(viewCategoria.richiestaInserimentoPercorsoAssoluto());
-				viewCategoria.stampaCaricamentoCategorieRiuscito();
-			} else {
-				viewCategoria.stampaArticoliGiaPresenti();
+	private void insertRoot() {
+		String nome, descrizione;
+		do {
+			nome = viewCategoria.richiestaInserimentoNomeRadice();
+			if (controllerGraspCategoria.existsRoot(nome)) {
+				viewCategoria.stampaNomeGiaPresente();
 			}
-		} catch (FileNotFoundException | JsonParseException e) {
-			viewCategoria.stampaErroriCaricamentoFile(e);
-		}
-	}
-
-	void toShortString() {
-		viewCategoria.stampaSpiegazioneVisualizzazioneGerarchia();
-		viewCategoria.stampaGerarchia(controllerGraspCategoria.toShortString());
+		} while (controllerGraspCategoria.existsRoot(nome));
+		descrizione = viewCategoria.richiestaInserimentoDescrizione();
+		askFields();
+		controllerGraspCategoria.makeRootCategory(nome, descrizione, controllerGraspCategoria.getCampi());
 	}
 
 	private void insertChild() {
@@ -75,17 +70,6 @@ public class ControllerMVCCategoria {
 		return nome_radice;
 	}
 
-	private String inputCategoriaNonPresente(String radice) {
-		String nome;
-		do {
-			nome = viewCategoria.richiestaInserimentoNomeCategoria();
-			if (controllerGraspCategoria.exists(radice, nome)) {
-				viewCategoria.stampaDatoGiaPresente(nome);
-			}
-		} while (controllerGraspCategoria.exists(radice, nome));
-		return nome;
-	}
-
 	private String inputParent(String radice) {
 		String padre;
 		do {
@@ -97,17 +81,15 @@ public class ControllerMVCCategoria {
 		return padre;
 	}
 
-	private void insertRoot() {
-		String nome, descrizione;
+	private String inputCategoriaNonPresente(String radice) {
+		String nome;
 		do {
-			nome = viewCategoria.richiestaInserimentoNomeRadice();
-			if (controllerGraspCategoria.existsRoot(nome)) {
-				viewCategoria.stampaNomeGiaPresente();
+			nome = viewCategoria.richiestaInserimentoNomeCategoria();
+			if (controllerGraspCategoria.exists(radice, nome)) {
+				viewCategoria.stampaDatoGiaPresente(nome);
 			}
-		} while (controllerGraspCategoria.existsRoot(nome));
-		descrizione = viewCategoria.richiestaInserimentoDescrizione();
-		askFields();
-		controllerGraspCategoria.makeRootCategory(nome, descrizione, controllerGraspCategoria.getCampi());
+		} while (controllerGraspCategoria.exists(radice, nome));
+		return nome;
 	}
 
 	private void askFields() {
@@ -122,7 +104,25 @@ public class ControllerMVCCategoria {
 		} while (scelta);
 	}
 
-	public String inputCategoriaPresente(String radice) {
+	private void importFromBatch() {
+		try {
+			if (controllerGraspArticoli.getArticoli().isEmpty()) {
+				controllerGraspCategoria.importFromBatch(viewCategoria.richiestaInserimentoPercorsoAssoluto());
+				viewCategoria.stampaCaricamentoCategorieRiuscito();
+			} else {
+				viewCategoria.stampaArticoliGiaPresenti();
+			}
+		} catch (FileNotFoundException | JsonParseException e) {
+			viewCategoria.stampaErroriCaricamentoFile(e);
+		}
+	}
+
+	void toShortString() {
+		viewCategoria.stampaSpiegazioneVisualizzazioneGerarchia();
+		viewCategoria.stampaGerarchia(controllerGraspCategoria.toShortString());
+	}
+
+	String inputCategoriaPresente(String radice) {
 		String nome;
 		do {
 			nome = viewCategoria.richiestaInserimentoNomeCategoria();
@@ -133,5 +133,4 @@ public class ControllerMVCCategoria {
 
 		return nome;
 	}
-
 }
