@@ -43,14 +43,6 @@ public class ControllerGraspCategoria {
 		return gerarchia;
 	}
 
-	public String toShortString() {
-		StringBuilder builder = new StringBuilder();
-		for (Categoria c : gerarchia.values()) {
-			builder.append(c.toShortString(0));
-		}
-		return builder.toString();
-	}
-
 	public boolean exists(String radice, String padre) {
 		return searchByName(radice, padre) != null;
 	}

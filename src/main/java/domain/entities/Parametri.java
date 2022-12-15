@@ -5,7 +5,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Set;
 
-public class Parametri implements Serializable {
+public class Parametri extends OggettoBase implements Serializable {
 
 	private String piazza;
 	private Set<String> luoghi;
@@ -48,11 +48,6 @@ public class Parametri implements Serializable {
 
 	public boolean isMaxTime(int ora, int minuti) {
 		return Orologio.ORARIO_MAX.equals(LocalTime.of(ora, minuti));
-	}
-
-	public String toString() {
-		return "Parametri:" + "\npiazza=" + piazza + "\nluoghi=" + luoghi + "\ngiorni=" + giorni + "\nintervalli orari="
-				+ orario + "\nscadenza=" + scadenza;
 	}
 
 	public String getPiazza() {

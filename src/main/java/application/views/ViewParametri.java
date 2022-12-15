@@ -4,7 +4,9 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Set;
 
+import application.views.renders.RendererBarattoResource;
 import baratto.myLib.InputDati;
+import domain.entities.Parametri;
 import myLib.MyMenu;
 
 public class ViewParametri {
@@ -17,13 +19,18 @@ public class ViewParametri {
 	public static final String[] MENU_CONFIGURAZIONE = { "Visualizza Configurazione", "Modifica Configurazione",
 			"Importa parametri in modalita batch" };
 	private static final MyMenu menuConfigurazione = new MyMenu("Menu Configurazione", MENU_CONFIGURAZIONE);
+	private final RendererBarattoResource catena;
 
+	public ViewParametri(RendererBarattoResource catena) {
+		this.catena=catena;
+	}
+	
 	public int scelta() {
 		return menuConfigurazione.scegli();
 	}
 
-	public void stampaParametri(String parametri) {
-		System.out.println(parametri);
+	public void stampaParametri(Parametri parametri) {
+		System.out.println(catena.render(parametri));
 	}
 
 	public String richiestaInserimentoPiazza() {

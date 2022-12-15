@@ -3,12 +3,12 @@ package application.controllersMVC;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collection;
 
 import java.util.List;
 import java.util.Map;
 
 import application.views.ViewBaratto;
+import application.views.renders.RendererBarattoResource;
 import domain.controllersGrasp.ControllerGraspArticoli;
 import domain.controllersGrasp.ControllerGraspBaratti;
 import domain.controllersGrasp.ControllerGraspParametri;
@@ -24,11 +24,11 @@ public class ControllerMVCBaratti {
 	private final ControllerGraspArticoli controllerGraspArticoli;
 	private final ViewBaratto viewBaratto;
 
-	public ControllerMVCBaratti(IDatabase salvataggi) {
-		this.controllerGraspBaratti = new ControllerGraspBaratti(salvataggi);
+	public ControllerMVCBaratti(IDatabase salvataggi,RendererBarattoResource catena) {
+		this.controllerGraspBaratti = new ControllerGraspBaratti(salvataggi,catena);
 		this.controllerGraspParametri = new ControllerGraspParametri(salvataggi);
 		this.controllerGraspArticoli = new ControllerGraspArticoli(salvataggi);
-		this.viewBaratto = new ViewBaratto();
+		this.viewBaratto = new ViewBaratto(catena);
 	}
 
 	void execute(Utente u) {
@@ -50,8 +50,10 @@ public class ControllerMVCBaratti {
 			viewBaratto.stampaNonHaiArticoliDisponibili();
 			return;
 		}
-
-		Articolo proposta = stampaElencoERitornaOpzioneSelezionata(articoliDisponibili,viewBaratto.richiediSelezioneProposta());
+		
+		Map<Integer, Articolo> elencoDisponibili = controllerGraspBaratti.creaMappa(articoliDisponibili);
+		int sceltaDisp = viewBaratto.stampaElencoEChiediArticolo(elencoDisponibili, viewBaratto.richiediSelezioneProposta());
+		Articolo proposta = elencoDisponibili.get(sceltaDisp);
 		List<Articolo> articoliSimili = controllerGraspArticoli.getListaArticoliDisponibili(utente,
 				proposta.getCategoria());
 		if (articoliSimili.isEmpty()) {
@@ -59,7 +61,10 @@ public class ControllerMVCBaratti {
 			return;
 		}
 
-		Articolo richiesta = stampaElencoERitornaOpzioneSelezionata(articoliSimili,viewBaratto.richiediSelezioneRichiesta());
+		
+		Map<Integer, Articolo> elencoSimili = controllerGraspBaratti.creaMappa(articoliSimili);
+		int sceltaSim = viewBaratto.stampaElencoEChiediArticolo(elencoSimili, viewBaratto.richiediSelezioneRichiesta());
+		Articolo richiesta = elencoSimili.get(sceltaSim);
 		controllerGraspBaratti.addBarattoEAggiornaStato(proposta.getCodice_prodotto(), richiesta.getCodice_prodotto());
 	}
 
@@ -68,8 +73,11 @@ public class ControllerMVCBaratti {
 			viewBaratto.stampaNonCiSonoBarattiDaConfermare();
 			return;
 		}
-		Baratto baratto = stampaElencoERitornaOpzioneSelezionata(controllerGraspBaratti.getBarattiDaConfermare(utente),viewBaratto.richiediQualeBarattoGestire());
-		viewBaratto.stampaBarattoScelto(baratto);
+	
+		Map<Integer, Baratto> elenco = controllerGraspBaratti.creaMappa(controllerGraspBaratti.getBarattiDaConfermare(utente));
+		int scelta = viewBaratto.stampaElencoERitornaBarattoScelto(elenco, viewBaratto.richiediQualeBarattoGestire());
+		Baratto baratto = elenco.get(scelta);
+		viewBaratto.stampaBaratto(baratto);
 		if (viewBaratto.richiestaAccettazioneBarattoProposto()) {
 			controllerGraspBaratti.setStatoOfferteInScambio(baratto);
 			controllerGraspArticoli.setStatoInScambio(baratto.getProposta(), baratto.getRichiesta());
@@ -82,7 +90,10 @@ public class ControllerMVCBaratti {
 	}
 
 	private void proponiLuogoEdOrario(Baratto baratto) {
-		String luogo = stampaElencoERitornaOpzioneSelezionata(controllerGraspParametri.getLuoghi(), viewBaratto.richiediOpzioneLuogo());
+		
+		Map<Integer, String> elenco = controllerGraspBaratti.creaMappa(controllerGraspParametri.getLuoghi());
+		int scelta = viewBaratto.stampaElencoEChiediLuogo(elenco, viewBaratto.richiediOpzioneLuogo());
+		String luogo = elenco.get(scelta);
 		LocalDateTime orario = gestioneOrario();
 		controllerGraspBaratti.setLuogoEOrario(luogo, orario, baratto);
 	}
@@ -133,7 +144,9 @@ public class ControllerMVCBaratti {
 			viewBaratto.stampaNonCiSonoIncontriDaGestire();
 			return;
 		}
-		gestioneIncontro(stampaElencoERitornaOpzioneSelezionata(controllerGraspBaratti.getBarattiInAttesa(utente),viewBaratto.richiediQualeBarattoGestire()));
+		Map<Integer, Baratto> elenco = controllerGraspBaratti.creaMappa(controllerGraspBaratti.getBarattiInAttesa(utente));
+		int scelta = viewBaratto.stampaElencoERitornaBarattoScelto(elenco, viewBaratto.richiediQualeBarattoGestire());
+		gestioneIncontro(elenco.get(scelta));
 	}
 
 	private void gestioneIncontro(Baratto baratto) {
@@ -145,12 +158,6 @@ public class ControllerMVCBaratti {
 		} else {
 			proponiLuogoEdOrario(baratto);
 		}
-	}
-
-	private <T> T stampaElencoERitornaOpzioneSelezionata(Collection<T> collection, String richiesta) {
-		Map<Integer, T> elenco = controllerGraspBaratti.creaMappa(collection);
-		int scelta = viewBaratto.stampaElencoEChiediOpzione(elenco, richiesta);
-		return elenco.get(scelta);
 	}
 
 }

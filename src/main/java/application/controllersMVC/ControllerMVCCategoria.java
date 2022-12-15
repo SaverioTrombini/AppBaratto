@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import com.google.gson.JsonParseException;
 
 import application.views.ViewCategoria;
+import application.views.renders.RendererBarattoResource;
 import domain.controllersGrasp.ControllerGraspArticoli;
 import domain.controllersGrasp.ControllerGraspCategoria;
 import infrastructure.persistence.IDatabase;
@@ -15,10 +16,10 @@ public class ControllerMVCCategoria {
 	private final ControllerGraspArticoli controllerGraspArticoli;
 	private final ViewCategoria viewCategoria;
 
-	public ControllerMVCCategoria(IDatabase salvataggi) {
+	public ControllerMVCCategoria(IDatabase salvataggi, RendererBarattoResource catena) {
 		this.controllerGraspCategoria = new ControllerGraspCategoria(salvataggi);
 		this.controllerGraspArticoli = new ControllerGraspArticoli(salvataggi);
-		this.viewCategoria = new ViewCategoria();
+		this.viewCategoria = new ViewCategoria(catena);
 	}
 
 	void execute() {
@@ -28,7 +29,7 @@ public class ControllerMVCCategoria {
 			switch (scelta) {
 			case 1 -> insertRoot();
 			case 2 -> insertChild();
-			case 3 -> toShortString();
+			case 3 -> stampaGerarchia();
 			case 4 -> importFromBatch();
 			}
 		} while (scelta != 0);
@@ -48,7 +49,7 @@ public class ControllerMVCCategoria {
 	}
 
 	private void insertChild() {
-		toShortString();
+		stampaGerarchia();
 		String radice = inputRoot();
 		String padre = inputParent(radice);
 		String nome = inputCategoriaNonPresente(radice);
@@ -117,9 +118,9 @@ public class ControllerMVCCategoria {
 		}
 	}
 
-	void toShortString() {
+	void stampaGerarchia() {
 		viewCategoria.stampaSpiegazioneVisualizzazioneGerarchia();
-		viewCategoria.stampaGerarchia(controllerGraspCategoria.toShortString());
+		viewCategoria.stampaGerarchia(controllerGraspCategoria.getGerarchia());
 	}
 
 	String inputCategoriaPresente(String radice) {

@@ -1,6 +1,10 @@
 package application.views;
 
+import java.util.Map;
+
+import application.views.renders.RendererBarattoResource;
 import baratto.myLib.InputDati;
+import domain.entities.Categoria;
 import myLib.MyMenu;
 
 public class ViewCategoria {
@@ -8,6 +12,11 @@ public class ViewCategoria {
 			"Aggiungi nuova sotto categoria ad una categoria esistente", "Visualizza gerarchia",
 			"Importa categorie in modalita batch" };
 	private static MyMenu menuConfiguratore = new MyMenu("Menu configuratore", MENU_CONFIGURATORE);
+	private final RendererBarattoResource catena;
+	
+	public ViewCategoria(RendererBarattoResource catena) {
+		this.catena=catena;
+	}
 
 	public int scegli() {
 		return menuConfiguratore.scegli();
@@ -42,10 +51,6 @@ public class ViewCategoria {
 				"I figli vengono mostrati sotto ai padri con un tab di indentazione\nNOME - {descrizione= obbligo}");
 	}
 
-	public void stampaGerarchia(String shortString) {
-		System.out.println(shortString);
-	}
-
 	public void stampaDatoNonPresente(String dato) {
 		System.out.println(dato + " non presente nel sistema");
 	}
@@ -76,6 +81,14 @@ public class ViewCategoria {
 
 	public void stampaErroriCaricamentoFile(Exception e) {
 		System.out.println("File not found / jsonparse error" + e);
+	}
+
+	public void stampaGerarchia(Map<String, Categoria> gerarchia) {
+		StringBuilder builder = new StringBuilder();
+		for(Categoria c : gerarchia.values()) {
+			builder.append(catena.render(c));
+		}
+		System.out.println(builder);
 	}
 
 }

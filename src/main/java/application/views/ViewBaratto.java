@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import application.views.renders.RendererBarattoResource;
 import baratto.myLib.InputDati;
 import baratto.myLib.MyMenu;
+import domain.entities.Articolo;
 import domain.entities.Baratto;
 import domain.entities.Orologio;
 
@@ -15,6 +17,11 @@ public class ViewBaratto {
 	public static final String[] MENU_BARATTO = { "Inizia un baratto", "Gestione proposte",
 			"Visualizza baratti in scambio", "Gestione incontri proposti per baratto" };
 	private static MyMenu menuBaratto = new MyMenu("Menu baratto", MENU_BARATTO);
+	private final RendererBarattoResource catena;
+
+	public ViewBaratto(RendererBarattoResource catena) {
+		this.catena = catena;
+	}
 
 	public int scelta() {
 		return menuBaratto.scegli();
@@ -66,16 +73,14 @@ public class ViewBaratto {
 		System.out.println("Inserisci luogo ed orario per lo scambio");
 	}
 
-	public void stampaBarattoScelto(Baratto baratto) {
-		System.out.println(baratto);
-	}
-
 	public void stampaNonCiSonoArticoliInScambio() {
 		System.out.println("Non ci sono articoli in scambio");
 	}
 
 	public void stampaBarattiInScambio(List<Baratto> articoliInScambio) {
-		articoliInScambio.forEach(System.out::println);
+		for (Baratto b : articoliInScambio) {
+			System.out.println(catena.render(b));
+		}
 	}
 
 	public void stampaNonCiSonoIncontriDaGestire() {
@@ -83,7 +88,7 @@ public class ViewBaratto {
 	}
 
 	public void stampaBaratto(Baratto baratto) {
-		System.out.println(baratto);
+		System.out.println(catena.render(baratto));
 	}
 
 	public boolean richiediSeAccettareLuogoEOrario() {
@@ -96,11 +101,6 @@ public class ViewBaratto {
 
 	public void stampaNonCiSonoArticoliSimili() {
 		System.out.println("Lista articoli vuota, attendi che vengano inseriti");
-	}
-
-	public <T> int stampaElencoEChiediOpzione(Map<Integer, T> elenco, String richiesta) {
-		elenco.forEach((num, scelta) -> System.out.printf("%d -> %s\n", num, scelta));
-		return InputDati.leggiIntero(richiesta, 1, elenco.size());
 	}
 
 	public String richiediSelezioneProposta() {
@@ -117,5 +117,26 @@ public class ViewBaratto {
 
 	public String richiediOpzioneLuogo() {
 		return "selezionare l'opzione associata al luogo che si vuole proporre";
+	}
+
+	public int stampaElencoEChiediLuogo(Map<Integer, String> elenco, String richiesta) {
+		elenco.forEach((num, scelta) -> System.out.printf("%d -> %s\n", num, scelta));
+		return InputDati.leggiIntero(richiesta, 1, elenco.size());
+	}
+
+	public int stampaElencoERitornaBarattoScelto(Map<Integer, Baratto> elenco, String richiesta) {
+		int i = 1;
+		for (Baratto b : elenco.values()) {
+			System.out.printf("%d -> %s\n", i++, catena.render(b));
+		}
+		return InputDati.leggiIntero(richiesta, 1, elenco.size());
+	}
+
+	public int stampaElencoEChiediArticolo(Map<Integer, Articolo> elencoDisponibili, String richiesta) {
+		int i = 1;
+		for (Articolo a : elencoDisponibili.values()) {
+			System.out.printf("%d -> %s\n", i++, catena.render(a));
+		}
+		return InputDati.leggiIntero(richiesta, 1, elencoDisponibili.size());
 	}
 }

@@ -82,8 +82,8 @@ public class ControllerGraspParametri {
 		return parametri.getGiorni();
 	}
 
-	public String getParametri() {
-		return parametri.toString();
+	public Parametri getParametri() {
+		return parametri;
 	}
 
 	public void setPiazza(String piazza) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import application.views.ViewArticoli;
+import application.views.renders.RendererBarattoResource;
 import domain.entities.Articolo;
 import domain.entities.Campo;
 import domain.entities.Utente;
@@ -19,11 +20,11 @@ public class ControllerMVCArticoli {
 	private final ViewArticoli viewArticoli;
 	private final ControllerMVCCategoria controllerMVCCategoria;
 
-	public ControllerMVCArticoli(IDatabase salvataggi) {
+	public ControllerMVCArticoli(IDatabase salvataggi, RendererBarattoResource catena) {
 		this.controllerGraspArticoli = new ControllerGraspArticoli(salvataggi);
 		this.controllerGraspCategoria = new ControllerGraspCategoria(salvataggi);
-		this.viewArticoli = new ViewArticoli();
-		this.controllerMVCCategoria = new ControllerMVCCategoria(salvataggi);
+		this.viewArticoli = new ViewArticoli(catena);
+		this.controllerMVCCategoria = new ControllerMVCCategoria(salvataggi, catena);
 
 	}
 
@@ -49,14 +50,14 @@ public class ControllerMVCArticoli {
 	}
 
 	void stampaArticoliTramiteCategoria(Utente u) {
-		controllerMVCCategoria.toShortString();
+		controllerMVCCategoria.stampaGerarchia();
 		String radice = controllerMVCCategoria.inputRoot();
 		String categoria = controllerMVCCategoria.inputCategoriaPresente(radice);
 		viewArticoli.stampaElencoArticoli(controllerGraspArticoli.getArticoliCategoria(radice, categoria, u.isAdmin()));
 	}
 
 	private void aggiungiArticolo(Utente utente) {
-		controllerMVCCategoria.toShortString();
+		controllerMVCCategoria.stampaGerarchia();
 		String radice = controllerMVCCategoria.inputRoot();
 		String categoria = controllerMVCCategoria.inputCategoriaPresente(radice);
 		Map<String, String> campi = getCampiDesc(controllerGraspCategoria.getCampi(radice, categoria));

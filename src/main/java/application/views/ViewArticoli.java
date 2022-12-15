@@ -3,6 +3,7 @@ package application.views;
 import java.util.List;
 import java.util.Map.Entry;
 
+import application.views.renders.RendererBarattoResource;
 import baratto.myLib.InputDati;
 import myLib.MyMenu;
 import domain.entities.Articolo;
@@ -13,13 +14,21 @@ public class ViewArticoli {
 			"Visualizza l'elenco offerte aperte tramite categoria", "Aggiungi un articolo",
 			"Modifica lo stato di un articolo" };
 	private static MyMenu menuArticoli = new MyMenu("Menu articoli", MENU_ARTICOLI);
+	private final RendererBarattoResource catena;
+
+	public ViewArticoli(RendererBarattoResource catena) {
+		this.catena=catena;
+	}
 
 	public int scelta() {
 		return menuArticoli.scegli();
 	}
 
+	
 	public void stampaElencoArticoli(List<Articolo> articoliCategoria) {
-		articoliCategoria.forEach(System.out::println);
+		for(Articolo a : articoliCategoria) {
+			System.out.println(catena.render(a));
+		}
 	}
 
 	public String richiestaInserimentoCampoObbligatorio(Entry<String, Campo> campo) {
@@ -39,7 +48,7 @@ public class ViewArticoli {
 	}
 
 	public void stampaArticolo(Articolo articolo) {
-		System.out.println(articolo);
+		System.out.println(catena.render(articolo));
 	}
 
 	public boolean richiestaRitiroArticolo() {

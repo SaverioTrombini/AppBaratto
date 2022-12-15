@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import application.views.renders.RendererBarattoResource;
 import domain.entities.Articolo;
 import domain.entities.Baratto;
 import domain.entities.Utente;
@@ -23,7 +24,7 @@ public class ControllerGraspBaratti {
 	private final ControllerGraspArticoli controllerGraspArticoli;
 	private final List<Baratto> elencoBaratti;
 
-	public ControllerGraspBaratti(IDatabase salvataggi) {
+	public ControllerGraspBaratti(IDatabase salvataggi, RendererBarattoResource catena) {
 		this.controllerGraspParametri = new ControllerGraspParametri(salvataggi);
 		this.controllerGraspArticoli = new ControllerGraspArticoli(salvataggi);
 		this.elencoBaratti = salvataggi.getBaratti();

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Categoria implements Serializable {
+public class Categoria extends OggettoBase implements Serializable {
 	private final String nome;
 	private final String descrizione;
 	private final Map<String, Campo> campi;
@@ -36,18 +36,7 @@ public class Categoria implements Serializable {
 		return nome.equals(category.nome);
 	}
 
-	public String prefix(int n) {
-		return "	".repeat(n);
-	}
 
-	public String toShortString(int initialPrefixNumber) {
-		StringBuilder built = new StringBuilder();
-		built.append(String.format("%s%s %s%n", prefix(initialPrefixNumber), nome, campi));
-		for (Categoria figlia : figli.values()) {
-			built.append(figlia.toShortString(initialPrefixNumber + 1));
-		}
-		return built.toString();
-	}
 
 	public boolean isLeaf() {
 		return figli.size() == 0;

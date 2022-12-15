@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalUnit;
 
-public class Baratto implements Serializable {
+public class Baratto extends OggettoBase implements Serializable {
 
 	private Utente fruitore;
 
@@ -97,12 +97,14 @@ public class Baratto implements Serializable {
 		proposta.setStato(StatoArticolo.OFFERTA_APERTA);
 		richiesta.setStato(StatoArticolo.OFFERTA_APERTA);
 	}
-	
-	@Override
-	public String toString() {
-		String s = scambioInCorso() ? String.format(" [luogo: %s orario: %s]", luogo, orario) : "";
-		return String.format("%s ha proposto il seguente baratto" + s + ":\n %s\n %s\n", proposta.getUsername(),
-				richiesta.toString(), proposta.toString());
+
+	public LocalDateTime getOrario() {
+		return orario;
 	}
+
+	public String getLuogo() {
+		return luogo;
+	}
+	
 
 }

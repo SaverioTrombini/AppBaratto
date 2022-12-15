@@ -2,7 +2,7 @@ package domain.entities;
 
 import java.io.Serializable;
 
-public class Campo implements Serializable {
+public class Campo extends OggettoBase implements Serializable {
 	private final boolean obbligatorio;
 	private final String nome;
 	private String descrizione;
@@ -21,9 +21,7 @@ public class Campo implements Serializable {
 		return obbligatorio;
 	}
 
-	public String toString() {
-		return String.format(" %s", obbligatorio);
-	}
+
 
 	public String getNome() {
 		return nome;

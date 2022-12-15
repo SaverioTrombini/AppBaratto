@@ -9,6 +9,7 @@ import java.util.Locale;
 import com.google.gson.JsonParseException;
 
 import application.views.ViewParametri;
+import application.views.renders.RendererBarattoResource;
 import domain.controllersGrasp.ControllerGraspParametri;
 import infrastructure.persistence.IDatabase;
 
@@ -16,9 +17,9 @@ public class ControllerMVCParametri {
 	private final ControllerGraspParametri controllerGraspParametri;
 	private final ViewParametri viewParametri;
 
-	public ControllerMVCParametri(IDatabase salvataggi) {
+	public ControllerMVCParametri(IDatabase salvataggi, RendererBarattoResource catena) {
 		this.controllerGraspParametri = new ControllerGraspParametri(salvataggi);
-		this.viewParametri = new ViewParametri();
+		this.viewParametri = new ViewParametri(catena);
 	}
 
 	void execute() {
@@ -26,14 +27,14 @@ public class ControllerMVCParametri {
 		do {
 			scelta = viewParametri.scelta();
 			switch (scelta) {
-			case 1 -> parametriToString();
+			case 1 -> stampaParametri();
 			case 2 -> editParametri();
 			case 3 -> importFromBatch();
 			}
 		} while (scelta != 0);
 	}
 
-	void parametriToString() {
+	void stampaParametri() {
 		viewParametri.stampaParametri(controllerGraspParametri.getParametri());
 	}
 
